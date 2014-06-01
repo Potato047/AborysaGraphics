@@ -17,11 +17,23 @@ public class Drawer {
 	private static BlendMode blendMode;
 	private static Color color;
 	public static void setTarget(Canvas canvas){
-		color = new Color(0,0,0,0);
+		bufferDraw = false;
+		canvasDraw = true;
+		imageDraw = false;
+		canvasTarget = canvas;	
 	}
 	
 	public static void setTarget(DrawingBuffer buffer){
-		
+		bufferDraw = true;
+		canvasDraw = false;
+		imageDraw = false;
+		bufferTarget = buffer;
+	}
+	public static void setTarget(BufferedImage image){
+		bufferDraw = false;
+		canvasDraw = false;
+		imageDraw = true;
+		imageTarget = image;
 	}
 	public static void drawImage(int x, int y, BufferedImage image){
 		
@@ -32,7 +44,6 @@ public class Drawer {
 	public static void drawImage(int x, int y, DrawingBuffer buffer){
 		int type = buffer.getType();
 		int width = buffer.getWidth();
-		imageTarget.getData();
 	}
 	public static void setDepth(int depth){
 		Drawer.depth = depth;
