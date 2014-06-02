@@ -12,7 +12,20 @@ public class DrawingBuffer {
 		this.width = width;
 		this.size = size;
 	}
+	public DrawingBuffer(int[] pixels, int width, byte depth){
+		this.pixels = new byte[pixels.length*5];
+		this.type = 5;
+		this.width = width;
+		this.size = pixels.length;
+		for(int i=0; i<this.pixels.length;i+=5){
+			for(int j=0; j < 4;j++){
+				this.pixels[i+j] = (byte)((pixels[i] >> 8*j)& 0xFF);
+			}
+			this.pixels[i+4] = depth;
+ 	}
 	
+	}
+		
 	public byte[] getPixel(int x, int y){
 		byte[] temp = new byte[type];
 		int index = (int) (x + Math.floor(y/width)) * type;
