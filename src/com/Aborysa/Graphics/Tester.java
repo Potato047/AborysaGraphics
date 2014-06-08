@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,12 +16,16 @@ public class Tester {
 	Dimension size;
 	boolean running = true;
 	DrawingBuffer testBuff = new DrawingBuffer(1024,4,32);
+	DrawingBuffer tempBuffer;
+	BufferedImage tempImage;
 	BufferStrategy bufferStrat;
 	float tempTime = 0;
 	public Tester(int width, int height){
 		frame = new JFrame("Test");
 		can = new Canvas();
 		size = new Dimension(width,height);
+		tempBuffer = new DrawingBuffer(width*height,4,width);
+		tempImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		init();
 		
 	}
@@ -46,6 +51,7 @@ public class Tester {
 			}
 			System.out.println(testStr);
 		}
+
 		while(running){
 			render();
 			can.getBufferStrategy().getDrawGraphics().dispose();
@@ -56,16 +62,24 @@ public class Tester {
 	
 	private void render(){
 		can.paint(can.getBufferStrategy().getDrawGraphics());
-		
-		
-		testBuff.fill(new byte[]{(byte)0xFF,(byte)((tempTime%256) - Math.random()*170),(byte)(byte)((tempTime%256) - Math.random()*170),(byte)(byte)((tempTime%256) - Math.random()*170)});
-		Drawer.drawBuffer((int)(tempTime%256), 0, testBuff);
+		//tempImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+		//Drawer.setTarget(can);
+		Drawer.setDepth((byte)0xF);
+		Drawer.setTarget(tempImage);
+		Drawer.drawBuffer((int)(tempTime), 0, testBuff);
+		//tempTime+=1;
+		//can.getBufferStrategy().getDrawGraphics().drawImage(tempImage, 0, 0,null);
+		//BufferedImage testTempImage = new BufferedImage(640,480,BufferedImage.TYPE_INT_ARGB);
+		//Drawer.setTarget(testTempImage);
+		Drawer.setTarget(can);
+		Drawer.drawImage(0, 0, tempImage);
+		//can.getBufferStrategy().getDrawGraphics().drawImage(tempImage,0,0,null);
+		//tempImage.flush();
 		/*	testBuff.fill(new byte[]{(byte)0xFF,(byte)((tempTime+32)%256),(byte)0,(byte)0});
 		Drawer.drawBuffer((tempTime+32)%256, 0, testBuff);
 		testBuff.fill(new byte[]{(byte)0xFF,(byte)((tempTime+64)%256),(byte)0,(byte)0});
 		Drawer.drawBuffer((tempTime+64)%256, 0, testBuff);
 	*/	
-		tempTime+=0.01;
 		
 	}
 	public static void main(String args[]){
