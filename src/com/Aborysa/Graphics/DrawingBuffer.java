@@ -1,5 +1,7 @@
 package com.Aborysa.Graphics;
 
+import java.awt.image.BufferedImage;
+
 public class DrawingBuffer {
 	private byte[] pixels;
 	private int width;
@@ -12,17 +14,49 @@ public class DrawingBuffer {
 		this.width = width;
 		this.size = size;
 	}
-	public DrawingBuffer(int[] pixels, int width, byte depth){
-		this.pixels = new byte[pixels.length*5];
+	public DrawingBuffer(BufferedImage image, byte depth){
+		this.pixels = new byte[image.getWidth()*image.getHeight() + 1/4*image.getWidth()*image.getHeight()];
+		width = image.getWidth();
+		size =  this.pixels.length/5;
+		type = 5;
+		int[] pixels = new int[image.getWidth()*image.getHeight()*4];
+		image.getRaster().getPixels(0, 0, image.getWidth(), image.getHeight(), pixels);		
+		for(int i=0; i < this.pixels.length;i++){
+			if((i-4)%5 == 0){
+				this.pixels[i] = depth;
+			}else if((i) % 5 == 0){
+				this.pixels[i] = (byte) pixels[(int) (i - Math.floor(i/5) + 3)];
+			}else{
+				this.pixels[i] =  (byte) pixels[(int) (i - Math.floor(i/5))-1];
+			}
+		//	System.out.println("[" + (i) +  "]:" + ((int)this.pixels[i] & 0xFF));		
+		}
+		
+	}
+	public DrawingBuffer(int[] pixels, int width, byte depth, boolean B){
+		
+		this.pixels = new byte[pixels.length + 1/4 * pixels.length];
 		this.type = 5;
 		this.width = width;
 		this.size = pixels.length;
-		for(int i=0; i<this.pixels.length;i+=5){
-			for(int j=0; j < 4;j++){
-				this.pixels[i+j] = (byte)((pixels[i] >> 8*j)& 0xFF);
+		for(int i=0; i<this.pixels.length;i++){
+			if(B){
+				if(i % 5 == 0){
+					this.pixels[i] = depth;
+				}else{
+					this.pixels[i] = (byte) pixels[i-(int)Math.floor(i/5)];
+					//System.out.println("[" +i+ "]:" +pixels[i]);
+					//if(pixels[i-(int)Math.floor(i/5)] > 0){
+					//	System.exit(0);
+					//} 
+				}
+			}else{
+				for(int j=1; j < 4;j++){
+					this.pixels[i+j] = (byte)(pixels[i] >> ( ( 8*(4-j) )  & 0xFF ) );
+				}
 			}
-			this.pixels[i+4] = depth;
- 	}
+			this.pixels[i] = depth;
+		}
 	
 	}
 		

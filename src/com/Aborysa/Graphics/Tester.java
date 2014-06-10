@@ -16,9 +16,13 @@ public class Tester {
 	Dimension size;
 	boolean running = true;
 	DrawingBuffer testBuff = new DrawingBuffer(1024,4,32);
+	DrawingBuffer testBuff2 = new DrawingBuffer(1024,4,32);
+	DrawingBuffer testBuff3 = new DrawingBuffer(1024,4,32);
+	
 	DrawingBuffer tempBuffer;
 	BufferedImage tempImage;
 	BufferStrategy bufferStrat;
+	BlendMode bMode = new BlendMode(BlendMode.ADD);
 	float tempTime = 0;
 	public Tester(int width, int height){
 		frame = new JFrame("Test");
@@ -27,7 +31,6 @@ public class Tester {
 		tempBuffer = new DrawingBuffer(width*height,4,width);
 		tempImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		init();
-		
 	}
 	private void init(){
 		//System.setProperty("sun.awt.noerasebackground", "true");
@@ -40,7 +43,11 @@ public class Tester {
 		frame.setVisible(true);
 		can.createBufferStrategy(2);
 		Drawer.setTarget(can);
+		Drawer.setBlendMode(bMode);
+		tempBuffer.fill(new byte[]{0,0,0,0});
 		testBuff.fill(new byte[]{(byte)0xFF,(byte)0xFF,(byte)0,(byte)0});
+		testBuff2.fill(new byte[]{(byte)0xFF,(byte)0,(byte)0xFF,(byte)0});
+		testBuff3.fill(new byte[]{(byte)0xFF,(byte)0,(byte)0,(byte)0xFF});
 		byte[] contains = testBuff.getPixels();
 		for (int i=0; i< testBuff.getPixelCount();i++){
 			String testStr = "";
@@ -61,26 +68,19 @@ public class Tester {
 	}
 	
 	private void render(){
+		
 		can.paint(can.getBufferStrategy().getDrawGraphics());
-		//tempImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-		//Drawer.setTarget(can);
 		Drawer.setDepth((byte)0xF);
 		Drawer.setTarget(tempImage);
-		Drawer.drawBuffer((int)(tempTime), 0, testBuff);
-		//tempTime+=1;
-		//can.getBufferStrategy().getDrawGraphics().drawImage(tempImage, 0, 0,null);
-		//BufferedImage testTempImage = new BufferedImage(640,480,BufferedImage.TYPE_INT_ARGB);
-		//Drawer.setTarget(testTempImage);
+		Drawer.setBlendMode(new BlendMode(0));
+		Drawer.drawBuffer(0, 0, tempBuffer);
+		Drawer.setBlendMode(new BlendMode(BlendMode.ADD));
+		//Drawer.drawBuffer(64, 64, testBuff);
+		//Drawer.drawBuffer(64+16, 64, testBuff2);
+		//Drawer.drawBuffer(64+16, 64+16, testBuff3);
+		Drawer.drawBuffer(64, 64+16, testBuff);
 		Drawer.setTarget(can);
-		Drawer.drawImage(0, 0, tempImage);
-		//can.getBufferStrategy().getDrawGraphics().drawImage(tempImage,0,0,null);
-		//tempImage.flush();
-		/*	testBuff.fill(new byte[]{(byte)0xFF,(byte)((tempTime+32)%256),(byte)0,(byte)0});
-		Drawer.drawBuffer((tempTime+32)%256, 0, testBuff);
-		testBuff.fill(new byte[]{(byte)0xFF,(byte)((tempTime+64)%256),(byte)0,(byte)0});
-		Drawer.drawBuffer((tempTime+64)%256, 0, testBuff);
-	*/	
-		
+		Drawer.drawImage(0, 0, tempImage);		
 	}
 	public static void main(String args[]){
 		new Tester(640,480);
