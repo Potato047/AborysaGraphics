@@ -53,9 +53,9 @@ public class Drawer {
 		}else if(canvasDraw){
 			BufferedImage tempImg = new BufferedImage(buffer.getWidth(),buffer.getPixelCount()/buffer.getWidth(),BufferedImage.TYPE_INT_ARGB);
 			Drawer.setTarget(tempImg);
-			Drawer.drawBuffer(x, y, buffer);
+			Drawer.drawBuffer(0, 0, buffer);
 			Drawer.setTarget(canvasTarget);
-			
+			canvasTarget.getBufferStrategy().getDrawGraphics().drawImage(tempImg, x, y, null);
 			/*int[] pixels = ((DataBufferInt)tempImg.getRaster().getDataBuffer()).getData();
 			byte[] bufferPix = buffer.getPixels();
 			int index = x + y * canvasTarget.getWidth();
@@ -70,7 +70,6 @@ public class Drawer {
 				pixels[(int) (index + i%buffer.getWidth() + (Math.floor(i/buffer.getWidth())*canvasTarget.getWidth()))] = temp;
 				//pixels[i] |= temp;
 			}*/
-			canvasTarget.getBufferStrategy().getDrawGraphics().drawImage(tempImg, x, y, null);
 		}else if(imageDraw){
 			int[] pixels = ((DataBufferInt)imageTarget.getRaster().getDataBuffer()).getData();
 			byte[] bufferPix = buffer.getPixels();

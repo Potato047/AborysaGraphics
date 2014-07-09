@@ -13,7 +13,7 @@ public class BlendMode {
 	public static final int RED =    0b100000;
 	public static final int GREEN = 0b1000000;	
 	public static final int BLUE = 0b10000000;	
-	int tresholdMin = 0, treholdMax = 255;
+	int tresholdMin = 0, tresholdMax = 255;
 	float rFactor = 1, gFactor = 1,bFactor = 1, aFactor = 1;
 	byte blendType = 0; //NONE, ADD, SUB
 	byte blendFactor = 0; //ALPHA, RED, GREEN, BLUE
@@ -58,26 +58,37 @@ public class BlendMode {
 			break;
 			case 3:
 				//Overlay_1
-				r2 = 0;
-				g2 = 0;
-				b2 = 0;
-				a2 = 0;
+				r2 = (r2 * a2/255) + (r1 * (1 - a2/255));
+				g2 = (g2 * a2/255) + (g1 * (1 - a2/255));
+				b2 = (b2 * a2/255) + (b1 * (1 - a2/255));
+				a2 += a1;
 			break;
 			case 4:
-				
+				r2 = (r2*r1)/255;
+				g2 = (g2*g1)/255;
+				b2 = (b2*b1)/255;
+				a2 += a1;
 			break;	
+			case 6:
+				//colour = 1 - (1-colour/255)*(1-topColour/255) 
+				r2 = (1-(1-r1/255) * (1-r2/255))*255;
+				g2 = (1-(1-g1/255) * (1-g2/255))*255;
+				b2 = (1-(1-b1/255) * (1-b2/255))*255;
+				a2 += a1;
+		
+			break;
 			case 0xF:
 				
 			break;
 		}
-		if(r2 > 255) r2=255;
-		if(g2 > 255) g2=255;
-		if(b2 > 255) b2=255;
-		if(a2 > 255) a2=255;
-		if(r2 < 0) r2=0;
-		if(g2 < 0) g2=0;
-		if(b2 < 0) b2=0;
-		if(a2 < 0) a2=0;
+		if(r2 > tresholdMax) r2=tresholdMax;
+		if(g2 > tresholdMax) g2=tresholdMax;
+		if(b2 > tresholdMax) b2=tresholdMax;
+		if(a2 > tresholdMax) a2=tresholdMax;
+		if(r2 < tresholdMin) r2=tresholdMin;
+		if(g2 < tresholdMin) g2=tresholdMin;
+		if(b2 < tresholdMin) b2=tresholdMin;
+		if(a2 < tresholdMin) a2=tresholdMin;
 	
 		blend = (b2 | (g2 << 8) | (r2 << 16) | (a2 << 24));
 		return blend;

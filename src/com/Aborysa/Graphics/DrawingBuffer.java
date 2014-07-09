@@ -15,7 +15,7 @@ public class DrawingBuffer {
 		this.size = size;
 	}
 	public DrawingBuffer(BufferedImage image, byte depth){
-		this.pixels = new byte[image.getWidth()*image.getHeight() + 1/4*image.getWidth()*image.getHeight()];
+		this.pixels = new byte[image.getWidth()*image.getHeight()*5];
 		width = image.getWidth();
 		size =  this.pixels.length/5;
 		type = 5;
@@ -35,7 +35,7 @@ public class DrawingBuffer {
 	}
 	public DrawingBuffer(int[] pixels, int width, byte depth, boolean B){
 		
-		this.pixels = new byte[pixels.length + 1/4 * pixels.length];
+		this.pixels = new byte[pixels.length*5];
 		this.type = 5;
 		this.width = width;
 		this.size = pixels.length;
