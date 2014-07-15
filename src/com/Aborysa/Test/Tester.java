@@ -1,4 +1,4 @@
-package com.Aborysa.Graphics;
+package com.Aborysa.Test;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -13,6 +13,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import com.Aborysa.Graphics.BlendMode;
+import com.Aborysa.Graphics.Drawer;
+import com.Aborysa.Graphics.DrawingBuffer;
 
 public class Tester {
 	JFrame frame;
@@ -36,7 +40,7 @@ public class Tester {
 		tempBuffer = new DrawingBuffer(width*height,4,width);
 		tempImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		try {
-			testLoadImg = ImageIO.read(new File("C:/Users/HNK/git/AborysaGraphics/bin/img/testImg.png"));
+			testLoadImg = ImageIO.read(new File("C:/Users/HNK/git/AborysaGraphics/rec/img/ant.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -83,7 +87,7 @@ public class Tester {
 		can.paint(can.getBufferStrategy().getDrawGraphics());
 		Drawer.setDepth((byte)0xF);
 		Drawer.setTarget(tempImage);
-		Drawer.setBlendMode(new BlendMode(BlendMode.ADD)); //Does not work with target set to a canvas for now
+		Drawer.setBlendMode(new BlendMode(BlendMode.OVERLAY_1)); //Does not work with target set to a canvas for now
 		Drawer.drawBuffer((int)(64+tempTime), 64, testBuff);
 		Drawer.drawBuffer((int)(64+16+tempTime), 64, testBuff2);
 		Drawer.drawBuffer((int)(64+16+tempTime), 64+16, testBuff3);
