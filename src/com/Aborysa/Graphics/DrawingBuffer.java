@@ -7,7 +7,7 @@ public class DrawingBuffer {
 	private int width;
 	private int type;
 	private int size;
-	
+	private short imageDepth = 0;
 	public DrawingBuffer(int size, int type, int width){
 		pixels = new byte[size*type];
 		this.type = type;
@@ -23,8 +23,9 @@ public class DrawingBuffer {
 		image.getRaster().getPixels(0, 0, image.getWidth(), image.getHeight(), pixels);		
 		for(int i=0; i < this.pixels.length;i++){
 			if((i-4)%5 == 0){
-				this.pixels[i] = depth;
-			}else if((i) % 5 == 0){
+				this.pixels[i] = 0;
+			}
+			if((i) % 5 == 0){
 				this.pixels[i] = (byte) pixels[(int) (i - Math.floor(i/5) + 3)];
 			}else{
 				this.pixels[i] =  (byte) pixels[(int) (i - Math.floor(i/5))-1];
@@ -96,7 +97,7 @@ public class DrawingBuffer {
 				for(int k=0; k < buffType; k++){
 						pixels[(int)((Math.floor(i/width) *this.width) + i%width)  +k] = buff[k];
 				}
-			}		
+			}
 		}
 		
 	}

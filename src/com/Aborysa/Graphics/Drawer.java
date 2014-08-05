@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferByte;
+import java.util.Random;
 	
 public class Drawer {
 	//This class will organize drawing
@@ -17,6 +19,8 @@ public class Drawer {
 	private static byte depth = 0;
 	private static BlendMode blendMode;
 	private static Color color;
+	private static Random ran = new Random();
+	static int timer = 0;
 	public static void setTarget(Canvas canvas){
 		bufferDraw = false;
 		canvasDraw = true;
@@ -37,64 +41,85 @@ public class Drawer {
 		imageTarget = image;
 	}
 	public static void drawImage(int x, int y, BufferedImage image){
-		DrawingBuffer buffer = new DrawingBuffer(image,depth);
-		drawBuffer(x,y,buffer);
-	
+		drawBuffer(x, y, new DrawingBuffer(image,depth));
+		
+	//	int[] pixels = new int[image.getWidth()*image.getHeight() * 4];
+	//	int width = image.getWidth();
+	//	int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+	//	int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+	//	image.getRaster().getPixels(0, 0, image.getWidth(), image.getHeight(), pixels);
+	//	drawPixelArray(x,y,width,pixels);
 	}
-	public static void drawImage(int x, int y, Image image){
-		BufferedImage image2 = (BufferedImage) image;
-		drawImage(x,y,image2);
-	}
-	public static void drawBuffer(int x, int y, DrawingBuffer buffer){
-		int type = buffer.getType();
-		int width = buffer.getWidth();
+	public static void drawPixelColorArray(int x, int y, int width, int[] pixelArray){
 		if(bufferDraw){
 			
 		}else if(canvasDraw){
+			
+		}else if(imageDraw){
+			
+		}
+	}
+	public static void drawPixelArray(int x, int y, int width, int[] pixelArray){
+		if(bufferDraw){
+			
+		}else if(canvasDraw){
+			BufferedImage tempImg = new BufferedImage(width,pixelArray.length,BufferedImage.TYPE_INT_ARGB);
+			Drawer.setTarget(tempImg);
+			Drawer.drawPixelArray(x, y, width, pixelArray);
+			Drawer.setTarget(canvasTarget);
+			canvasTarget.getBufferStrategy().getDrawGraphics().drawImage(tempImg,x,y,null);
+		}
+		else if(imageDraw){
+			int[] pixels = ((DataBufferInt)imageTarget.getRaster().getDataBuffer()).getData();
+			int tempPixel = 0;
+			int index = 0;
+			int a = y*imageTarget.getWidth();
+			for(int i=0; i< pixelArray.length;i++){
+				if((i/width) > imageTarget.getHeight()){
+					break;
+				}
+				if((x+i%width) > imageTarget.getWidth()){
+					i = (i/width + 1);
+					continue;
+				}
+				index = x+(a + i%width + (int)Math.floor(i/width)*imageTarget.getWidth());
+				tempPixel = pixels[index];
+				tempPixel = blendMode.getBlend(tempPixel, pixelArray[i]);
+				pixels[index] = pixelArray[i];
+			}
+		}
+	}
+	public static void drawBuffer(int x, int y, DrawingBuffer buffer){
+		
+		if(bufferDraw){
+			
+		}else if(canvasDraw){
+			
 			BufferedImage tempImg = new BufferedImage(buffer.getWidth(),buffer.getPixelCount()/buffer.getWidth(),BufferedImage.TYPE_INT_ARGB);
 			Drawer.setTarget(tempImg);
 			Drawer.drawBuffer(0, 0, buffer);
 			Drawer.setTarget(canvasTarget);
 			canvasTarget.getBufferStrategy().getDrawGraphics().drawImage(tempImg, x, y, null);
-			/*int[] pixels = ((DataBufferInt)tempImg.getRaster().getDataBuffer()).getData();
-			byte[] bufferPix = buffer.getPixels();
-			int index = x + y * canvasTarget.getWidth();
-	
-			for(int i=0; i<(bufferPix.length)/buffer.getType();i++){
-				int temp = 0;
-			/*	for(int j=0; j < buffer.getType(); j++){
-					if(j>4)break;
-					pixels[i] |= ((int)(bufferPix[i*buffer.getType() + (buffer.getType() - (j+1))] &0xFF) << 8*(j));
-				}
-				temp = ((((int)(bufferPix[i*buffer.getType()]) & 0xFF) << (8*3)) | (((int)(bufferPix[i*buffer.getType()+1]) & 0xFF) << (8*2)) | (((int)(bufferPix[i*buffer.getType()+2]) & 0xFF) << (8)) | (((int)(bufferPix[i*buffer.getType()+3]) & 0xFF)));
-				pixels[(int) (index + i%buffer.getWidth() + (Math.floor(i/buffer.getWidth())*canvasTarget.getWidth()))] = temp;
-				//pixels[i] |= temp;
-			}*/
+			
 		}else if(imageDraw){
 			int[] pixels = ((DataBufferInt)imageTarget.getRaster().getDataBuffer()).getData();
 			byte[] bufferPix = buffer.getPixels();
 			int index = x + y * imageTarget.getWidth();
+			int arrayIndex = 0;
+			int temp = 0;
 			for(int i=0; i<(bufferPix.length)/buffer.getType();i++){
 				if ((int) (index + i%buffer.getWidth() + (Math.floor(i/buffer.getWidth())*imageTarget.getWidth())) >= pixels.length){
 					break;
 				}
 				if(!(x + i%buffer.getWidth() > imageTarget.getWidth())){
-					int temp = pixels[(int) (index + i%buffer.getWidth() + (Math.floor(i/buffer.getWidth())*imageTarget.getWidth()))];
-					/*for(int j=0; j < buffer.getType(); j++){
-						if(j>4)break;
-						temp |= ((int)(bufferPix[i*buffer.getType() + (buffer.getType() - (j+1))] &0xFF) << 8*(j));
-					}*/
-				//	temp = ((((int)(bufferPix[i*buffer.getType()]) & 0xFF) << (8*3)) | (((int)(bufferPix[i*buffer.getType()+1]) & 0xFF) << (8*2)) | (((int)(bufferPix[i*buffer.getType()+2]) & 0xFF) << (8)) | (((int)(bufferPix[i*buffer.getType()+3]) & 0xFF)));
+					arrayIndex = (int) (index + i%buffer.getWidth() + (Math.floor(i/buffer.getWidth())*imageTarget.getWidth()));
+					temp = pixels[arrayIndex];
 					temp = blendMode.getBlend(temp, ((((int)(bufferPix[i*buffer.getType()]) & 0xFF) << (8*3)) | (((int)(bufferPix[i*buffer.getType()+1]) & 0xFF) << (8*2)) | (((int)(bufferPix[i*buffer.getType()+2]) & 0xFF) << (8)) | (((int)(bufferPix[i*buffer.getType()+3]) & 0xFF))));
-					/*	System.out.println(bufferPix[i*buffer.getType()]);
-					System.out.println(bufferPix[i*buffer.getType() + 1]);		
-					System.out.println(bufferPix[i*buffer.getType() + 2]);
-					System.out.println(bufferPix[i*buffer.getType() + 3]);
-					System.out.println(temp);
-					System.exit(0);*/
-					pixels[(int) (index + i%buffer.getWidth() + (Math.floor(i/buffer.getWidth())*imageTarget.getWidth()))] = temp;
+					pixels[arrayIndex] = temp;
+			
 				}
 			}
+			
 		}
 	}
 	public static void setDepth(byte depth){

@@ -63,6 +63,7 @@ public class BlendMode {
 				b2 = (b2 * a2/255) + (b1 * (1 - a2/255));
 				a2 += a1;
 			break;
+				//Mul
 			case 4:
 				r2 = (r2*r1)/255;
 				g2 = (g2*g1)/255;
