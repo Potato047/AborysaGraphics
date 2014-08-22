@@ -14,7 +14,6 @@ public class FPSCounter {
 		dTime = (System.nanoTime() - time);
 		time = System.nanoTime();
 		FPS = 1000000000/dTime;
-		System.out.println("Delta: " + dTime);
 	}
 	
 }

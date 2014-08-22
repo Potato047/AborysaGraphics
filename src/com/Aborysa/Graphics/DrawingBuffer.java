@@ -101,6 +101,9 @@ public class DrawingBuffer {
 		}
 		
 	}
+	public void plotPixel(int pixel, byte depth){
+		
+	}
 	public int getType(){
 		return type;
 	}

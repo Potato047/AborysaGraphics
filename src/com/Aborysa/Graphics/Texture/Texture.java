@@ -31,7 +31,7 @@ public class Texture {
 
 	}
 	public Texture(DrawingBuffer buffer){
-		
+		//Not implemented
 	}
 	
 }

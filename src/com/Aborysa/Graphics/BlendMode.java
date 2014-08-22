@@ -36,6 +36,8 @@ public class BlendMode {
 		this(MODE,1f,1f,1f,1f);
 	}
 	public int getBlend(int background, int forground){
+		if(blendType == NONE)return forground;
+		//Lag issues here got to make this code more optimal
 		int blend = 0;
 		int r1 = ((background >> (2*8)) & 0xFF);
 		int g1 = ((background >> 8) & 0xFF);
@@ -46,6 +48,9 @@ public class BlendMode {
 		int b2 = (forground & 0xFF);
 		int a2 = (forground >> (3*8) & 0xFF);
 		switch(blendType){
+			case 0xF:
+			
+			break;
 			case 1:
 				//ADD:
 				r2 = (r2*a2/255)+(r1*a1/255);
@@ -76,11 +81,8 @@ public class BlendMode {
 				g2 = (1-(1-g1/255) * (1-g2/255))*255;
 				b2 = (1-(1-b1/255) * (1-b2/255))*255;
 				a2 += a1;
-		
 			break;
-			case 0xF:
-				
-			break;
+
 		}
 		if(r2 > tresholdMax) r2=tresholdMax;
 		if(g2 > tresholdMax) g2=tresholdMax;
