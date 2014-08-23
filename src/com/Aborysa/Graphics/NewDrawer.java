@@ -62,6 +62,7 @@ public class NewDrawer {
 			drawPixelArray(x,y,0,0,image.getWidth(),image.getHeight(),image.getWidth(),pixels);
 		}
 	}
+	
 	public static void drawImagePart(int x, int y,int xp1,int yp1, int xp2, int yp2, BufferedImage image){
 		if (image.getRaster().getDataBuffer() instanceof DataBufferByte){
 			byte[] pixels = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
@@ -104,6 +105,7 @@ public class NewDrawer {
 				}
 				index = x + i4%width + ((int)(i4/width) + y)*bufferTarget2.getWidth();
 				color = pixelArray[i];
+				//bufferTarget2.plotPixel(index, color,depth);
 				bufferTarget2.plotPixelBlend(index, color,depth, blendMode);
 			}
 		}
@@ -131,8 +133,9 @@ public class NewDrawer {
 		if(imageDraw){
 			int[] pixels = ((DataBufferInt)imageTarget.getRaster().getDataBuffer()).getData();
 			for(int i = 0 ; i< pixelArray.length;i+=4){
-				int i4 = (i/4);;
-				plotPixel(x+((i4)%width),y+(int)((i4)/width),pixels,imageTarget.getWidth(),(pixelArray[i] << 8*3) | (pixelArray[i+1] << 8*2) | (pixelArray[i+2] << 8) | (pixelArray[i+3]));
+				int i4 = (i/4);
+				//LOL WTF: byte[0] = alpha, byte[1] = Blue, byte[2] = Green, byte[3] = red
+				plotPixel(x+((i4)%width),y+(int)((i4)/width),pixels,imageTarget.getWidth(),(pixelArray[i]<< 8*3) | (pixelArray[i+1]) | (pixelArray[i+2] << 8) | (pixelArray[i+3] << 8*2));
 			}
 		}else if(canvasDraw){
 			BufferedImage tempImg = new BufferedImage(width,pixelArray.length/width,BufferedImage.TYPE_INT_ARGB);
@@ -156,7 +159,8 @@ public class NewDrawer {
 					continue;
 				}
 				index = x + i4%width + ((int)(i4/width) + y)*bufferTarget2.getWidth();
-				color = (pixelArray[i] << 8*3) | (pixelArray[i+1] << 8*2) | (pixelArray[i+2] << 8) | (pixelArray[i+3]);
+				color = (pixelArray[i]<< 8*3) | (pixelArray[i+1]) | (pixelArray[i+2] << 8) | (pixelArray[i+3] << 8*2);
+				//bufferTarget2.plotPixel(index, color,depth);
 				bufferTarget2.plotPixelBlend(index, color,depth, blendMode);
 			}
 			

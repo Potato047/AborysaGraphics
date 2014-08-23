@@ -44,11 +44,11 @@ public class DrawingBuffer2 {
 			depthBuffer[i] = 0;
 		}
 	}
-	public void plotPixel(int x, int y,int color, byte depth){
+	public void plotPixel(int x, int y,int color, int depth){
 		int index = x+(y*width);
 		plotPixel(index, color, depth);
 	}
-	public void plotPixel(int index,int color, byte depth){
+	public void plotPixel(int index,int color, int depth){
 		if (depthBuffer[index] < depth){
 			depthBuffer[index] = depth;
 			pixels[index] = color;

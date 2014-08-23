@@ -108,7 +108,7 @@ public class Tester {
 		can.paint(can.getBufferStrategy().getDrawGraphics());
 		buffer2.clear();
 		NewDrawer.setDepth(2);
-		NewDrawer.setTarget(buffer2);
+		NewDrawer.setTarget(tempImage);
 		NewDrawer.drawImage(0,0,testLoadImg);
 		NewDrawer.setDepth(2);
 		NewDrawer.drawImage(8,8,testLoadImg);
