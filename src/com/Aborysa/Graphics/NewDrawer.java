@@ -25,6 +25,7 @@ public class NewDrawer {
 	private static Color color;
 	private static Random ran = new Random();
 	static int timer = 0;
+	
 	public static void setTarget(Canvas canvas){
 		bufferDraw = false;
 		canvasDraw = true;
@@ -51,23 +52,31 @@ public class NewDrawer {
 		bufferDraw2 = true;
 		bufferTarget2 = buffer;
 	}
-	public static void drawTexture(){
-		
-	}
+
 	public static void drawImage(int x, int y, BufferedImage image){
 		if (image.getRaster().getDataBuffer() instanceof DataBufferByte){
 			byte[] pixels = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
-			drawPixelArray(x,y,image.getWidth(),pixels);
+			drawPixelArray(x,y,image.getWidth(),image.getHeight(),image.getWidth(),pixels);
 		}else if (image.getRaster().getDataBuffer() instanceof DataBufferInt){
 			int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-			drawPixelArray(x,y,image.getWidth(),pixels);
+			drawPixelArray(x,y,image.getWidth(),image.getHeight(),image.getWidth(),pixels);
 		}
 	}
-
-	public static void drawPixelArray(int x, int y, int width, int[] pixelArray){
+	public static void drawImagePart(int x, int y, int x2, int y2, BufferedImage image){
+		if (image.getRaster().getDataBuffer() instanceof DataBufferByte){
+			byte[] pixels = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+			
+			drawPixelArray(x,y,x2,y2,image.getWidth(),pixels);
+		}else if (image.getRaster().getDataBuffer() instanceof DataBufferInt){
+			int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+			drawPixelArray(x,y,x2,y2,image.getWidth(),pixels);
+		}		
+	}
+	
+	public static void drawPixelArray(int x, int y,int x2,int y2, int width, int[] pixelArray){
 		if(imageDraw){
 			int[] pixels = ((DataBufferInt)imageTarget.getRaster().getDataBuffer()).getData();
-			for(int i = 0 ; i< pixelArray.length;i++){
+			for(int i = (x+y*width) ; i< (x2 + y2 * width);i++){
 				if(i/width > pixelArray.length) break;
 				plotPixel(x+(i%width),y+(int)i/width,pixels,width,pixelArray[i]);
 			}
@@ -75,7 +84,7 @@ public class NewDrawer {
 		else if(canvasDraw){
 			BufferedImage tempImg = new BufferedImage(width,pixelArray.length/width,BufferedImage.TYPE_INT_ARGB);
 			NewDrawer.setTarget(tempImg);
-			NewDrawer.drawPixelArray(x, y, width, pixelArray);
+			NewDrawer.drawPixelArray(x, y,x2,y2, width, pixelArray);
 			NewDrawer.setTarget(canvasTarget);
 			canvasTarget.getBufferStrategy().getDrawGraphics().drawImage(tempImg,x,y,null);
 		}else if(bufferDraw2){
@@ -100,10 +109,10 @@ public class NewDrawer {
 		}
 		
 	}
-	public static void drawBuffer(int x, int y, DrawingBuffer2 buffer){
+	public static void drawBuffer(int x, int y ,DrawingBuffer2 buffer){
 		if(bufferDraw2){
 			int[] pixels = buffer.getPixels();
-			drawPixelArray(x,y,buffer.getWidth(),pixels);	
+			drawPixelArray(x,y,buffer.getWidth(),buffer.getPixelCount()/buffer.getWidth(),buffer.getWidth(),pixels);	
 		}
 		if(canvasDraw){
 			BufferedImage tempImg = new BufferedImage(buffer.getWidth(),buffer.getPixelCount()/buffer.getWidth(),BufferedImage.TYPE_INT_ARGB);
@@ -114,11 +123,11 @@ public class NewDrawer {
 		}
 		if(imageDraw){
 			int[] pixels = buffer.getPixels();
-			drawPixelArray(x,y,buffer.getWidth(),pixels);
+			drawPixelArray(x,y,buffer.getWidth(),buffer.getPixelCount()/buffer.getWidth(),buffer.getWidth(),pixels);	
 		}
 
 	}
-	public static void drawPixelArray(int x, int y, int width, byte[] pixelArray){
+	public static void drawPixelArray(int x, int y,int x2, int y2, int width, byte[] pixelArray){
 		if(imageDraw){
 			int[] pixels = ((DataBufferInt)imageTarget.getRaster().getDataBuffer()).getData();
 			for(int i = 0 ; i< pixelArray.length;i+=4){
@@ -128,7 +137,7 @@ public class NewDrawer {
 		}else if(canvasDraw){
 			BufferedImage tempImg = new BufferedImage(width,pixelArray.length/width,BufferedImage.TYPE_INT_ARGB);
 			NewDrawer.setTarget(tempImg);
-			NewDrawer.drawPixelArray(x, y, width, pixelArray);
+			NewDrawer.drawPixelArray(x, y,x2,y2, width, pixelArray);
 			NewDrawer.setTarget(canvasTarget);
 			canvasTarget.getBufferStrategy().getDrawGraphics().drawImage(tempImg,x,y,null);
 		}else if(bufferDraw2){

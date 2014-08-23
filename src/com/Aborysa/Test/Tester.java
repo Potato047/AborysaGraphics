@@ -83,7 +83,7 @@ public class Tester {
 			e.printStackTrace();
 		}
 		buffer2 = new DrawingBuffer2(tempImage);
-		buffer2.setBgColor(0xFFF);
+		buffer2.setBgColor(0xFF00FFFF);
 		/*byte[] contains = testBuff4.getPixels();
 		for (int i=0; i< testBuff4.getPixelCount();i++){
 			String testStr = "";
@@ -110,35 +110,9 @@ public class Tester {
 		NewDrawer.setDepth(2);
 		NewDrawer.setTarget(buffer2);
 		NewDrawer.drawImage(0,0,testLoadImg);
-		NewDrawer.setDepth(1);
-		NewDrawer.drawImage(16,16,testLoadImg);
-	//	NewDrawer.setTarget(tempImage);
-	//	NewDrawer.drawBuffer(0,0,buffer2);
-		
-		can.getBufferStrategy().getDrawGraphics().drawImage(tempImage, 0, 0, null);
-		//NewDrawer.setTarget(can);
-		//NewDrawer.drawBuffer(0, 0, buffer2);
-		//can.getBufferStrategy().getDrawGraphics().drawImage(tempImage, 0, 0, null);
-	/*	Drawer.setDepth((byte)0xF);
-	//	Drawer.setTarget(tempImage);
-	//	Drawer.setBlendMode(new BlendMode(BlendMode.NONE)); //Does not work with target set to a canvas for now
-	//	Drawer.drawBuffer((int)(64+tempTime), 64, testBuff);
-	//	Drawer.drawBuffer((int)(64+16+tempTime), 64, testBuff2);
-	//	Drawer.drawBuffer((int)(64+16+tempTime), 64+16, testBuff3);
-	//	Drawer.drawPixelArray(0, 0, 32, pixelArrayTest);
-	//	NewDrawer.setBlendMode(new BlendMode(BlendMode.NONE));
-		NewDrawer.setTarget(tempImage);
-		for(int i = 0; i < 10;i++){
-			NewDrawer.drawImage((i%32)*32 , (32*(i/32))%480, testLoadImg);
-			//can.getBufferStrategy().getDrawGraphics().draw
-			can.getBufferStrategy().getDrawGraphics().drawImage(testLoadImg,(i%32)*32 , (32*(i/32))%480,null);
-		}
-//		Drawer.drawBuffer(64, 64+16, testBuff);
-	can.getBufferStrategy().getDrawGraphics().drawImage(tempImage, 0, 0, null);
-		can.getBufferStrategy().getDrawGraphics().drawImage(testLoadImg, 0, 0, null);
-	//	Drawer.setTarget(can);
-	//	Drawer.drawImage(0, 0, tempImage);
-		*/
+		NewDrawer.setDepth(2);
+		NewDrawer.drawImage(8,8,testLoadImg);
+		can.getBufferStrategy().getDrawGraphics().drawImage(tempImage,0,0,null);
 	}
 	public static void main(String args[]){
 		new Tester(640,480);
